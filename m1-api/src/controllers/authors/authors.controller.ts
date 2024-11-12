@@ -69,11 +69,35 @@ export class AuthorController {
     }
 
     @Get(':id')
-    async getAuthor(@Param('id') id: string): Promise<Author> {
+    async getAuthor(@Param('id') body :{ id: string}): Promise<Author> {
+        const { id } = body;
         const author = await this.authorService.findOne(id);
         if (!author) {
             throw new Error('Auteur non trouvé');
         }
         return author;
     }
+
+    @Put(':id')
+async updateAuthor(@Param('id') id: string, @Body() updateAuthorDto: CreateAuthorDto): Promise<Author> {
+    return this.authorService.update(id, updateAuthorDto);
+    }
+
+    @Delete(':id')
+async removeAuthor(@Param('id') id: string): Promise<void> {
+    return this.authorService.remove(id);
+    }
+
+    @Post(':id/books')
+async addBookToAuthor(@Param('id') id: string, @Body() body: { bookId: string }): Promise<Author> {
+    const { bookId } = body;
+    return this.authorService.AddNewBookToAuthor(id, bookId);
+    }
+
+    @Delete(':id/books/:bookId')
+async removeBookFromAuthor(@Param('id') id: string, @Param('bookId') bookId: string): Promise<Author> {
+    return this.authorService.RemoveBookFromAuthor(id, bookId);
+    }
+
+
 }

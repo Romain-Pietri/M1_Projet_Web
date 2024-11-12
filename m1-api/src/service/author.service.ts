@@ -81,5 +81,12 @@ export class AuthorService {
             where: { id },
         });
     }
+
+    async update(id: string, updateAuthorDto: CreateAuthorDto): Promise<Author> {
+        await this.authorRepository.update(id, updateAuthorDto);
+        return this.authorRepository.findOneBy({ id });
+    }
+
+
     
 }

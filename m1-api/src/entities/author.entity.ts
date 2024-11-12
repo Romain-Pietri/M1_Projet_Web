@@ -16,6 +16,9 @@ export class Author {
     @Column({ nullable: true })
     deathDate: Date;
 
+    @Column({ nullable: true })
+    biography: string;
+
     @Column("simple-array", { nullable: true })
     books: string[];
     

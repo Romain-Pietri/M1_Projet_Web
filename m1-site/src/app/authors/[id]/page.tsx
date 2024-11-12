@@ -14,6 +14,11 @@ interface Author {
   biography: string;
   photo: string;
   books: { id: string; title: string }[];
+  birthDate: string;
+  deathDate?: string;
+  firstName?: string;
+  lastName?: string;
+  imageUrl?: string;
 }
 
 const AuthorDetailPage = () => {
@@ -63,8 +68,15 @@ const AuthorDetailPage = () => {
 
   const handleAddBook = async () => {
     try {
-      const newBook = { title: "Nouveau Livre", authorId: id };
-      await axios.post(`http://localhost:3001/api/books`, newBook);
+      const newBook = { 
+        title: "Nouveau Livre", 
+        authorId: id,
+        publicationDate: new Date().toISOString(), // Ajoutez une date de publication par défaut
+        price: 0 // Ajoutez un prix par défaut
+      };
+      const response = await axios.post(`http://localhost:3001/api/books`, newBook);
+      const bookId = response.data.id; // Assuming the response contains the new book's ID
+      await axios.post(`http://localhost:3001/api/authors/${id}/books`, { bookId });
       fetchAuthorDetails(id as string);
     } catch (error) {
       setError("Erreur lors de l'ajout du livre.");
@@ -83,6 +95,11 @@ const AuthorDetailPage = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const formatDate = (dateString: string): string => {
+    const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString('fr-FR', options);
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-32">
@@ -94,37 +111,63 @@ const AuthorDetailPage = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="w-full bg-bgLight dark:bg-text text-text dark:text-bgLight rounded-lg shadow-xl p-8 max-w-4xl mx-auto">
-      <div className="flex items-center space-x-8">
-        <img src={author?.photo} alt={author?.name} className="w-48 h-64 object-cover rounded-lg" />
-        <div className="flex flex-col space-y-4">
-          <h1 className="text-3xl font-bold text-center md:text-left">{author?.name}</h1>
-          <p className="text-lg text-center md:text-left">Biographie: {author?.biography}</p>
-          <form onSubmit={handleUpdate}>
-            <input type="text" value={author?.name} onChange={(e) => setAuthor({ ...author, name: e.target.value })} />
-            <textarea value={author?.biography} onChange={(e) => setAuthor({ ...author, biography: e.target.value })} />
-            <button type="submit">Mettre à jour</button>
+    <div className="w-full bg-gradient-to-r from-green-200 to-blue-300 dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto mt-8">
+      <div className="flex flex-col md:flex-row items-center md:items-start space-x-0 md:space-x-8">
+        <img 
+          src={author?.imageUrl || '/path/to/default/image.png'} 
+          alt={author?.name} 
+          className="w-48 h-64 object-cover rounded-lg shadow-md mb-4 md:mb-0" 
+          onError={(e) => e.currentTarget.src = '/path/to/default/image.png'} 
+        />
+        <div className="flex flex-col space-y-4 w-full">
+          <h1 className="text-3xl font-bold text-center md:text-left mb-2">{author?.name}</h1>
+          <p className="text-lg text-center md:text-left mb-4 italic">{author?.biography || "Aucune biographie disponible"}</p>
+          
+          <form onSubmit={handleUpdate} className="flex flex-col space-y-2">
+            <input 
+              type="text" 
+              value={author?.name || ''} 
+              onChange={(e) => setAuthor({ ...author, name: e.target.value })} 
+              className="p-2 border rounded-md"
+              placeholder="Nom de l'auteur"
+            />
+            <textarea 
+              value={author?.biography || ''} 
+              onChange={(e) => setAuthor({ ...author, biography: e.target.value })} 
+              className="p-2 border rounded-md"
+              placeholder="Biographie"
+            />
+            <Button variant="contained" color="primary" type="submit" className="self-start mt-2">Mettre à jour</Button>
           </form>
-          <h2 className="text-2xl font-bold text-center md:text-left mt-4">Livres:</h2>
-          <ul>
+
+          <h2 className="text-2xl font-bold text-center md:text-left mt-6">Livres :</h2>
+          <ul className="list-disc list-inside">
             {author?.books.map(book => (
-              <li key={book.id}>
+              <li key={book.id} className="flex justify-between items-center mt-2">
                 <a href={`/books/${book.id}`} className="text-blue-500 hover:underline">{book.title}</a>
-                <button onClick={() => handleDeleteBook(book.id)}>Supprimer</button>
+                <button onClick={() => handleDeleteBook(book.id)} className="text-red-500 hover:text-red-700">Supprimer</button>
               </li>
             ))}
           </ul>
-          <button onClick={handleAddBook}>Ajouter un livre</button>
-          <Button variant="contained" color="secondary" onClick={handleOpen}>Supprimer l'auteur</Button>
+          <Button onClick={handleAddBook} variant="contained" color="secondary" className="mt-4">Ajouter un livre</Button>
+
+          <Button variant="contained" color="error" onClick={handleOpen} className="mt-4">Supprimer l'auteur</Button>
           <Modal open={open} onClose={handleClose}>
-            <Box className="p-4 bg-white rounded-lg shadow-lg">
-              <h2>Confirmer la suppression</h2>
-              <p>Êtes-vous sûr de vouloir supprimer cet auteur ?</p>
-              <Button variant="contained" color="secondary" onClick={handleDelete}>Confirmer</Button>
-              <Button variant="contained" onClick={handleClose}>Annuler</Button>
+            <Box className="p-4 bg-white dark:bg-gray-700 rounded-lg shadow-lg mx-auto mt-20 max-w-sm">
+              <h2 className="text-lg font-bold">Confirmer la suppression</h2>
+              <p className="mt-2">Êtes-vous sûr de vouloir supprimer cet auteur ?</p>
+              <div className="flex justify-end space-x-4 mt-4">
+                <Button variant="contained" color="error" onClick={handleDelete}>Confirmer</Button>
+                <Button variant="outlined" onClick={handleClose}>Annuler</Button>
+              </div>
             </Box>
           </Modal>
         </div>
+      </div>
+      <div className="mt-8">
+        <p>Date de naissance: {author?.birthDate ? formatDate(author.birthDate) : 'N/A'}</p>
+        {author?.deathDate && <p>Date de décès: {formatDate(author.deathDate)}</p>}
+        <p>Livres: {author?.books.map(book => book.title).join(', ')}</p>
       </div>
     </div>
   );
