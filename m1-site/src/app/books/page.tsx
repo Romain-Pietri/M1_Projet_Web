@@ -13,6 +13,11 @@ interface Book {
     price: number;
 }
 
+interface Author {
+    id:string;
+    name: string;
+}
+
 const BooksPage = () => {
     const [books, setBooks] = useState<Book[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -20,6 +25,29 @@ const BooksPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [newBook, setNewBook] = useState({ title: '', publicationDate: '', author: '' , price: 0});
     const [sortBy, setSortBy] = useState('');
+
+    const [authors, setAuthors] = useState<Author[]>([]);
+    const [selectedAuthor, setSelectedAuthor] = useState<string| null>(null);
+
+    const fetchAuthors = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/api/authors');
+            setAuthors(response.data);
+
+        } catch (error) {
+            console.error('Erreur lors de la récupération des auteurs:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAuthors();
+    }, []);
+
+    const handleAuthorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        console.log("Auteur sélectionné :", e.target.value ); // Vérifiez que l'ID de l'auteur sélectionné s'affiche
+        setSelectedAuthor(e.target.value);
+    };
+
 
     // Fonction pour récupérer les livres avec les paramètres de tri et de recherche
     const fetchBooks = async () => {
@@ -64,10 +92,18 @@ const BooksPage = () => {
 
     const handleAddBook = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        const bookData = {
+            ...newBook,
+            author: selectedAuthor || '', // Ajoutez `selectedAuthor` comme `author`
+        };
+
+        console.log('Données du livre:', bookData);
+
         const response = await fetch('http://localhost:3001/api/books', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newBook),
+            body: JSON.stringify(bookData),
         });
         if (response.ok) {
             fetchBooks(); // Actualiser la liste des livres
@@ -156,15 +192,17 @@ const BooksPage = () => {
                             </div>
                             <div>
                                 <label>Auteur:</label>
-                                <input
-                                    type="text"
-                                    name="author"
-                                    value={newBook.author}
-                                    onChange={handleInputChange}
+                                <select
+                                    value={selectedAuthor || ''}
+                                    onChange={handleAuthorChange}
                                     required
-                                    className="w-full p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-100"
-
-                                />
+                                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                                >
+                                    <option value="" disabled>Choisissez un auteur</option>
+                                    {authors.map((author) => (
+                                        <option key={author.id} value={author.id}>{author.name}</option>
+                                    ))}
+                                </select>
                             </div>
                             <div>
                                 <label>Prix:</label>
