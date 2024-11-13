@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import axios from 'axios';
-import { Book } from '../models/book';
+import { Book } from '../models/book.model';
 
 interface BooksContextType {
   books: Book[];
