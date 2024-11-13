@@ -1,8 +1,8 @@
-import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
 import { Book } from './book.entity';
 
-@Entity('ratings')
-export class Comment extends BaseEntity {
+@Entity()
+export class Rating {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -16,11 +16,11 @@ export class Comment extends BaseEntity {
     rating: number;
 
     //permet de supprimer les commentaires liés à un livre supprimé
-    @ManyToOne(() => Book, (book) => book.comments, {
+    @ManyToOne(() => Book, (book) => book.id, {
         onDelete: 'CASCADE',
     })
     book: Book;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 }

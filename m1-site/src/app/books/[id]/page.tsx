@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { BookDetailProvider, useBookDetail } from '../../../providers/BookDetailProvider';
+import { RatingProvider, useRating } from '../../../providers/ratingProvider';
 import DeleteBookButton from '../../../components/DeleteBookButton';
 import { CircularProgress, Button } from '@mui/material';
 import AddCommentDrawer from '../../../components/AddRatingDrawer';  // Assurez-vous d'importer AddCommentDrawer
@@ -19,6 +20,7 @@ const BookDetailContent = () => {
     };
 
     const handleOpenDrawer = () => {
+        AddCommentDrawer;
         setOpenDrawer(true);  // Ouvrir le Drawer
     };
 
@@ -47,10 +49,11 @@ const BookDetailContent = () => {
                     <p className="text-lg text-center md:text-left mb-2">Prix : {book?.price} €</p>
                     <DeleteBookButton onDelete={handleDelete} />
 
+                    <button onClick={() => setOpenDrawer(true)} className="p-2 bg-bgLight text-text hover:bg-bgMuted rounded-lg dark:bg-text dark:text-bgLight dark:hover:bg-secondary ml-4">
+                      Ajouter une note
+                    </button>
                     {/* Bouton pour ajouter un commentaire */}
-                    <Button variant="contained" color="primary" onClick={handleOpenDrawer}>
-                        Ajouter un commentaire
-                    </Button> 
+                    <AddCommentDrawer bookId='' open={openDrawer} onClose={handleCloseDrawer} onAddRating={useRating}/>
                 </div>
             </div>
 
@@ -67,9 +70,11 @@ const BookDetailPage = () => {
     if (!bookId) return <div>Erreur : ID non trouvé.</div>;
 
     return (
-        <BookDetailProvider id={bookId}>
-            <BookDetailContent />
-        </BookDetailProvider>
+        <RatingProvider>
+            <BookDetailProvider id={bookId}>
+                <BookDetailContent />
+            </BookDetailProvider>
+        </RatingProvider>
     );
 };
 

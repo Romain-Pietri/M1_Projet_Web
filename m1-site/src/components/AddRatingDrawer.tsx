@@ -3,21 +3,27 @@
 import React, { useState } from 'react';
 import { Drawer, Rating, Button, TextField } from '@mui/material';
 import { useRating } from '../providers/ratingProvider'
+import { useParams } from 'next/navigation';
 
 interface AddRatingDrawerProps {
   bookId: string;
   open: boolean;
   onClose: () => void; 
+  onAddRating: (newRating: {user: string, rating: number, comment?: string}) => void;
 }
 
-const AddRatingDrawer: React.FC<AddRatingDrawerProps> = ({ bookId, open, onClose }) => {
+const AddRatingDrawer: React.FC<AddRatingDrawerProps> = ({ open, onClose }) => {
   const { addRating, isLoading, error } = useRating();
   const [newRating, setNewRating] = useState<number>(0);
   const [newComment, setNewComment] = useState<string>(''); 
   const [userName, setUserName] = useState<string>(''); 
 
+  const { id } = useParams(); // Récupérer l'ID du livre depuis l'URL
+  const bookId = Array.isArray(id) ? id[0] : id; // Gérer le type pour que bookId soit une chaîne unique
+  // log le bookId
   const handleAddRating = async () => {
     if (newRating > 0 && userName.trim()) {
+      console.log(bookId);
       await addRating(bookId, userName, newRating, newComment); 
       onClose();  // Fermer le Drawer après ajout
     } else {

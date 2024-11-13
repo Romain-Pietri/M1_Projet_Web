@@ -1,5 +1,4 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Comment } from './rating.entity';
 
 @Entity()
 export class Book {
@@ -17,7 +16,4 @@ export class Book {
 
     @Column('float', { default: 0 })
     price: number;
-
-    @OneToMany(() => Comment, (comment) => comment.book)
-    comments: Comment[];
 }

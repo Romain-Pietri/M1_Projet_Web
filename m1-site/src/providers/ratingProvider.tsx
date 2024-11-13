@@ -1,6 +1,8 @@
+'use client';
+
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import axios from 'axios';
-import { Comment } from '../models/rating.model'; // Assurez-vous que ce modèle existe
+import { Comment } from '../models/rating.model';
 
 interface RatingContextType {
   comments: Comment[]; // Liste des commentaires
@@ -27,7 +29,7 @@ export const RatingProvider: React.FC<RatingProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      const response = await axios.get(`/ratings?bookId=${bookId}`);
+        const response = await axios.post(`http://localhost:3001/api/ratings/${bookId}`);
       setComments(response.data); // Mettre à jour l'état avec les commentaires récupérés
     } catch (err) {
       setError('Erreur lors de la récupération des commentaires.');
@@ -42,7 +44,7 @@ export const RatingProvider: React.FC<RatingProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      const response = await axios.post('/ratings', { bookId, user, rating, comment });
+      const response = await axios.post('http://localhost:3001/api/ratings', { bookId, user, rating, comment });
       if (response.status === 200) {
         // Rafraîchir les commentaires après l'ajout du nouveau commentaire
         fetchComments(bookId);
