@@ -6,7 +6,8 @@ import { BookDetailProvider, useBookDetail } from '../../../providers/BookDetail
 import { RatingProvider, useRating } from '../../../providers/ratingProvider';
 import DeleteBookButton from '../../../components/DeleteBookButton';
 import { CircularProgress, Button } from '@mui/material';
-import AddCommentDrawer from '../../../components/AddRatingDrawer';  // Assurez-vous d'importer AddCommentDrawer
+import AddCommentDrawer from '../../../components/AddRatingDrawer'; 
+import BookComments from '../../../components/BookComments';
 import '../../App.css';
 
 const BookDetailContent = () => {
@@ -52,10 +53,13 @@ const BookDetailContent = () => {
                     <button onClick={() => setOpenDrawer(true)} className="p-2 bg-bgLight text-text hover:bg-bgMuted rounded-lg dark:bg-text dark:text-bgLight dark:hover:bg-secondary ml-4">
                       Ajouter une note
                     </button>
+
                     {/* Bouton pour ajouter un commentaire */}
                     <AddCommentDrawer bookId='' open={openDrawer} onClose={handleCloseDrawer} onAddRating={useRating}/>
                 </div>
             </div>
+                {/* Composant pour afficher les commentaires */}
+                {/* <BookComments bookId='' open={openComments} onClose={handleCloseComments} onOpen={handleOpenComments}/> */}
 
         </div>
     );
