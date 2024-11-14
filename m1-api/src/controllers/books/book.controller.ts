@@ -52,7 +52,4 @@ export class BookController {
         await this.bookService.remove(id);
     }
 
-    // Ajout commentaires
-
-
 }
