@@ -6,7 +6,6 @@ import {CreateBookDto} from "../../DTO/book.dto";
 @Controller('api/books')
 export class BookController {
     constructor(private readonly bookService: BookService) {}
-
     // Route pour obtenir la liste des livres avec option de recherche et de tri
     @Get()
     async getBooks(
