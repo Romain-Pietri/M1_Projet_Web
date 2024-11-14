@@ -41,6 +41,8 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
       });
       setBooks(response.data);
       setFilteredBooks(response.data);
+      console.log(response.data);
+      
     } catch (error) {
       console.error('Erreur lors de la récupération des livres:', error);
     }
