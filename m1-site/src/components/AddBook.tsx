@@ -9,10 +9,12 @@ interface Author {
 interface AddBookProps {
   showModal: boolean;
   closeModal: () => void;
-  onAddBook: (newBook: { title: string, publicationDate: string, author: string, price: number }) => void;
+  onAddBook: (newBook: { title: string, publicationDate: string, author: string, price: number, file: File}) => void;
+  
 }
 
 const AddBook: React.FC<AddBookProps> = ({ showModal, closeModal, onAddBook }) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [newBook, setNewBook] = useState({ title: '', publicationDate: '', author: '', price: 0 });
   
   // Accédez à l'ensemble des auteurs depuis le contexte
@@ -23,18 +25,28 @@ const AddBook: React.FC<AddBookProps> = ({ showModal, closeModal, onAddBook }) =
     const { name, value } = e.target;
     setNewBook(prevBook => ({ ...prevBook, [name]: value }));
   };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+        setSelectedFile(e.target.files[0]);
+    }
+};
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     // Vérifier que l'auteur est bien sélectionné avant d'ajouter le livre
     if (!selectedAuthor) {
       alert('Veuillez sélectionner un auteur.');
       return;
     }
 
+
     // Ajouter l'ID de l'auteur au newBook
-    const bookWithAuthor = { ...newBook, author: selectedAuthor, price: Number(newBook.price) };
+    if (!selectedFile) {
+      alert('Veuillez sélectionner un fichier.');
+      return;
+    }
+    const bookWithAuthor = { ...newBook, author: selectedAuthor, price: Number(newBook.price), file: selectedFile };
 
     // Passer l'objet avec l'ID de l'auteur à la fonction onAddBook
     onAddBook(bookWithAuthor);
@@ -104,7 +116,15 @@ const AddBook: React.FC<AddBookProps> = ({ showModal, closeModal, onAddBook }) =
                 className="w-full p-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-text dark:bg-bgDark dark:placeholder-gray-400"
               />
             </div>
-
+            <div>
+                <label>Image:</label>
+                <input
+                    type="File"
+                    name="file"
+                    onChange={handleFileChange}
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-100"
+                />
+            </div>
             <div className="flex justify-center gap-4 mt-4">
               <button
                 type="button"
