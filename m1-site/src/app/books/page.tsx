@@ -8,7 +8,7 @@ import '../App.css';
 
 const BooksPageContent = () => {
   const { filteredBooks, searchQuery, setSearchQuery, sortBy, setSortBy, addBook } = useBooks();
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false); 
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
