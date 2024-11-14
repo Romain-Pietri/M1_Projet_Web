@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsString, Max, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString, Max, Min, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateRatingDto {
@@ -12,9 +12,11 @@ export class CreateRatingDto {
     @Type(() => Number)
     rating: number; // Note entre 1 et 5
 
+    @IsOptional()
     @IsString()
-    comment: string;
+    comment?: string;
 
+    @IsString()
     @IsNotEmpty()
     bookId: string; // ID du livre pour associer l'avis à un livre
 }
