@@ -5,7 +5,7 @@ import { Rating } from '../../entities/rating.entity';
 
 @Controller('api/ratings')
 export class RatingController {
-    constructor(private readonly ratingService: RatingService) {}
+    constructor(private readonly ratingService: RatingService) { }
 
     @Post()
     async createRating(@Body() createRatingDto: CreateRatingDto) {
@@ -15,11 +15,13 @@ export class RatingController {
     // Récupérer tous les commentaires d'un livre par son ID
     @Get('/:bookId')
     async getCommentsByBookId(@Param('bookId') bookId: string): Promise<Rating[]> {
-        const comments = await this.ratingService.getCommentsByBookId(bookId);
-        if (!comments || comments.length === 0) {
-            throw new NotFoundException(`Aucun commentaire trouvé pour le livre avec l'ID ${bookId}.`);
+        try { 
+            const comments = await this.ratingService.getCommentsByBookId(bookId) 
+            return comments;
         }
-        return comments;
+        catch (error) {
+            throw new NotFoundException(error.message);
+        }
     }
 
     @Get()

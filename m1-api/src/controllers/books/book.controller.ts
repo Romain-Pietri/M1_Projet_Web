@@ -1,11 +1,7 @@
-import { Controller, Get, Post, Body, Query, Param, Put, Delete, NotFoundException,UploadedFile, UseInterceptors,HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, Put, Delete, NotFoundException } from '@nestjs/common';
 import { BookService } from '../../service/book.service';
 import { Book } from '../../entities/book.entity';
 import {CreateBookDto} from "../../DTO/book.dto";
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { FileInterceptor } from '@nestjs/platform-express';
-type File = Express.Multer.File;
 
 @Controller('api/books')
 export class BookController {
@@ -22,19 +18,8 @@ export class BookController {
 
     // Route pour ajouter un nouveau livre
     @Post()
-    @HttpCode(200)
-    @UseInterceptors(FileInterceptor('file', {
-        storage: diskStorage({
-            destination: './uploads',
-            filename: (req, file, cb) => {
-                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-                cb(null, `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`);
-            }
-        })
-    }))
-    async createBook(@Body() createBookDto: CreateBookDto, @UploadedFile() file: Express.Multer.File): Promise<Book> {
-        const imageUrl = file ? `http://localhost:3001/uploads/${file.filename}` : null;
-        return this.bookService.create({ ...createBookDto, imageUrl });
+    async createBook(@Body() createBookDto: CreateBookDto): Promise<Book> {
+        return this.bookService.create(createBookDto);
     }
 
     // Récupérer un livre par son ID

@@ -6,27 +6,31 @@ import { BookDetailProvider, useBookDetail } from '../../../providers/BookDetail
 import { RatingProvider, useRating } from '../../../providers/ratingProvider';
 import DeleteBookButton from '../../../components/DeleteBookButton';
 import { CircularProgress, Button } from '@mui/material';
-import AddCommentDrawer from '../../../components/AddRatingDrawer'; 
+import AddRatingDrawer from '../../../components/AddRatingDrawer'; 
 import BookComments from '../../../components/BookComments';
 import '../../App.css';
 
 const BookDetailContent = () => {
     const { book, loading, error, deleteBook } = useBookDetail();
     const router = useRouter();
-    const [openDrawer, setOpenDrawer] = useState(false);  // State pour ouvrir/fermer le Drawer
+    const [openAddDrawer, setOpenAddDrawer] = useState(false);  // State pour ouvrir/fermer le Drawer
+    const [openComments, setOpenComments] = useState(false);  // State pour ouvrir/fermer le Drawer
 
     const handleDelete = async () => {
         await deleteBook();
         router.push('/books');
     };
 
-    const handleOpenDrawer = () => {
-        AddCommentDrawer;
-        setOpenDrawer(true);  // Ouvrir le Drawer
+    const handleCloseAddDrawer = () => {
+        setOpenAddDrawer(false);  // Fermer le Drawer
     };
 
-    const handleCloseDrawer = () => {
-        setOpenDrawer(false);  // Fermer le Drawer
+    const handleOpenComments = () => {
+        setOpenComments(true);  // Ouvrir le Drawer
+    }
+
+    const handleCloseComments = () => {
+        setOpenComments(false);  // Fermer le Drawer
     };
 
     if (loading) {
@@ -40,7 +44,7 @@ const BookDetailContent = () => {
     if (error) return <div>{error}</div>;
 
     return (
-        <div className="w-full bg-bgLight dark:bg-text text-text dark:text-bgLight rounded-lg shadow-xl p-8 max-w-4xl mx-auto">
+        <div className="w-full bg-bgLight dark:bg-text text-text dark:text-bgLight rounded-lg shadow-xl p-8 mt-8 max-w-2xl mx-auto">
             <div className="flex items-center space-x-8">
                 <img src='https://via.placeholder.com/150' alt={book?.title} className="w-48 h-64 object-cover rounded-lg" />
                 <div className="flex flex-col space-y-4">
@@ -48,18 +52,27 @@ const BookDetailContent = () => {
                     <p className="text-lg text-center md:text-left">Auteur: {book?.author}</p>
                     <p className="text-md text-center md:text-left">Date de publication: {book?.publicationDate}</p>
                     <p className="text-lg text-center md:text-left mb-2">Prix : {book?.price} €</p>
-                    <DeleteBookButton onDelete={handleDelete} />
 
-                    <button onClick={() => setOpenDrawer(true)} className="p-2 bg-bgLight text-text hover:bg-bgMuted rounded-lg dark:bg-text dark:text-bgLight dark:hover:bg-secondary ml-4">
+                    {/* Bouton pour afficher les commentaires */}
+                    <button onClick={handleOpenComments} className="p-2 bg-primary text-text hover:bg-secondary rounded-lg">
+                      Voir les commentaires
+                    </button>
+
+                    {/* Composant pour afficher les commentaires */}
+                    <BookComments bookId='' open={openComments} onClose={handleCloseComments} onOpen={handleOpenComments}/>
+
+
+                    <button onClick={() => setOpenAddDrawer(true)} className="p-2 bg-primary text-text hover:bg-secondary rounded-lg">
                       Ajouter une note
                     </button>
 
                     {/* Bouton pour ajouter un commentaire */}
-                    <AddCommentDrawer bookId='' open={openDrawer} onClose={handleCloseDrawer} onAddRating={useRating}/>
+                    <AddRatingDrawer bookId='' open={openAddDrawer} onClose={handleCloseAddDrawer} onAddRating={useRating}/>
+
+                    <DeleteBookButton onDelete={handleDelete}/>
+                    
                 </div>
             </div>
-                {/* Composant pour afficher les commentaires */}
-                {/* <BookComments bookId='' open={openComments} onClose={handleCloseComments} onOpen={handleOpenComments}/> */}
 
         </div>
     );
