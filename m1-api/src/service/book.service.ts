@@ -38,6 +38,7 @@ export class BookService {
         const book = this.bookRepository.create(createBookDto);
         return this.bookRepository.save(book);
     }
+    
 
     // Récupérer un livre par son ID
     async findOne(id: string): Promise<Book | null> {
