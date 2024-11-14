@@ -16,7 +16,4 @@ export class Book {
 
     @Column('float', { default: 0 })
     price: number;
-
-    @Column({ nullable: true })
-    imageUrl: string;
 }
