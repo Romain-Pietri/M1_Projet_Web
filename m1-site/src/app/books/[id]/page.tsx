@@ -46,7 +46,7 @@ const BookDetailContent = () => {
     return (
         <div className="w-full bg-bgLight dark:bg-text text-text dark:text-bgLight rounded-lg shadow-xl p-8 mt-8 max-w-2xl mx-auto">
             <div className="flex items-center space-x-8">
-                <img src='https://via.placeholder.com/150' alt={book?.title} className="w-48 h-64 object-cover rounded-lg" />
+                <img src={ book?.imageUrl } alt={book?.title} className="w-48 h-64 object-cover rounded-lg" />
                 <div className="flex flex-col space-y-4">
                     <h1 className="text-3xl font-bold text-center md:text-left">{book?.title}</h1>
                     <p className="text-lg text-center md:text-left">Auteur: {book?.author}</p>

@@ -5,5 +5,6 @@ export interface Book {
   author: string;
   price: number;
   imageUrl?: string;
+  file?:File;
   averageRating?: number;
 }

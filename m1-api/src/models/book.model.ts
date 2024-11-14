@@ -8,4 +8,5 @@ export class BookModel {
     publicationDate: string;
     author: string; //mettre author
     price: number;
+    imageUrl: string;
 }
