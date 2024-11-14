@@ -1,20 +1,16 @@
-import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn,} from 'typeorm';
+import { Book } from './book.entity';
 
-
-import { Book } from '../entities/book.entity';
-
-export type RatingId = string & { __brand: 'Comment' };
-
-@Entity('ratings')
-export class Comment extends BaseEntity {
+@Entity()
+export class Rating {
     @PrimaryGeneratedColumn('uuid')
-    id: RatingId;
+    id: string;
 
     @Column()
     user: string;
 
-    @Column()
-    comment: string;
+    @Column({ nullable: true })
+    comment: string | null;
 
     @Column()
     rating: number;
@@ -24,4 +20,7 @@ export class Comment extends BaseEntity {
         onDelete: 'CASCADE',
     })
     book: Book;
+
+    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
 }
