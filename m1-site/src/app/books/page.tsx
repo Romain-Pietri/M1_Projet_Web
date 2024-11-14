@@ -59,7 +59,7 @@ const BooksPageContent = () => {
       {/* Liste des livres */}
       <ul className="flex flex-wrap justify-center gap-8 max-w-5xl mx-auto mt-6">
         {filteredBooks.map((book) => (
-          <BookOfDay key={book.id} id={book.id} title={book.title} author={book.author} image={book.imageUrl} />
+          <BookOfDay key={book.id} id={book.id} title={book.title} author={book.author} />
         ))}
       </ul>
 

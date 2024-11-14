@@ -3,8 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AuthorOfTheDay from '../../components/AuthorOfDay'; // Importez le composant AuthorOfTheDay
-import '../App.css';
-
 
 interface Author {
     id: number;

@@ -4,6 +4,5 @@ export class CreateBookDto {
     publicationDate: string;
     author: string;
     price: number;
-    imageUrl: string;
 }
 

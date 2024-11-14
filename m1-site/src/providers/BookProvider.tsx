@@ -48,19 +48,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
 
   const addBook = async (newBook: Omit<Book, 'id'>) => {
     try {
-      console.log(newBook);
-  
-      const formData = new FormData();
-      for (const key in newBook) {
-        formData.append(key, (newBook as any)[key]);
-      }
-  
-      const response = await axios.post('http://localhost:3001/api/books', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-  
+      const response = await axios.post('http://localhost:3001/api/books', newBook);
       if (response.status === 200) {
         fetchBooks(); // Rafraîchir la liste des livres après ajout
       }
@@ -79,7 +67,6 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
     };
     useEffect(() => {
         fetchAuthors();
-        
     }, []);
 
   useEffect(() => {
