@@ -8,7 +8,7 @@ import '../App.css';
 
 const BooksPageContent = () => {
   const { filteredBooks, searchQuery, setSearchQuery, sortBy, setSortBy, addBook } = useBooks();
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false); 
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -59,7 +59,7 @@ const BooksPageContent = () => {
       {/* Liste des livres */}
       <ul className="flex flex-wrap justify-center gap-8 max-w-5xl mx-auto mt-6">
         {filteredBooks.map((book) => (
-          <BookOfDay key={book.id} id={book.id} title={book.title} author={book.author} />
+          <BookOfDay key={book.id} id={book.id} title={book.title} author={book.author} image={book.imageUrl} />
         ))}
       </ul>
 
