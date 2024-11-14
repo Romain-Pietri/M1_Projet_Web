@@ -1,4 +1,10 @@
 import React, { useState } from 'react';
+import { useBooks } from '../providers/BookProvider';
+
+interface Author {
+  id: string;
+  name: string;
+}
 
 interface AddBookProps {
   showModal: boolean;
@@ -8,6 +14,10 @@ interface AddBookProps {
 
 const AddBook: React.FC<AddBookProps> = ({ showModal, closeModal, onAddBook }) => {
   const [newBook, setNewBook] = useState({ title: '', publicationDate: '', author: '', price: 0 });
+  
+  // Accédez à l'ensemble des auteurs depuis le contexte
+  const { authors } = useBooks();
+  const [selectedAuthor, setSelectedAuthor] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -16,15 +26,29 @@ const AddBook: React.FC<AddBookProps> = ({ showModal, closeModal, onAddBook }) =
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onAddBook(newBook);
+
+    // Vérifier que l'auteur est bien sélectionné avant d'ajouter le livre
+    if (!selectedAuthor) {
+      alert('Veuillez sélectionner un auteur.');
+      return;
+    }
+
+    // Ajouter l'ID de l'auteur au newBook
+    const bookWithAuthor = { ...newBook, author: selectedAuthor, price: Number(newBook.price) };
+
+    // Passer l'objet avec l'ID de l'auteur à la fonction onAddBook
+    onAddBook(bookWithAuthor);
     closeModal(); // Fermer la modale après ajout
+  };
+
+  const handleAuthorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedAuthor(e.target.value);
   };
 
   return (
     showModal && (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-text dark:text-bgLight border-gray-300 dark:border-gray-600">
         <div className="bg-white dark:bg-buttonDark p-6 rounded-lg shadow-lg w-full max-w-md">
-          {/* Centrer le titre */}
           <h1 className="text-lg text-text font-bold mb-4 text-center">Ajouter un livre</h1>
           <form onSubmit={handleSubmit}>
             <div>
@@ -51,14 +75,22 @@ const AddBook: React.FC<AddBookProps> = ({ showModal, closeModal, onAddBook }) =
             </div>
             <div>
               <label>Auteur:</label>
-              <input
-                type="text"
-                name="author"
-                value={newBook.author}
-                onChange={handleInputChange}
+              <select
+                value={selectedAuthor || ''}
+                onChange={handleAuthorChange}
                 required
-                className="w-full p-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-text dark:bg-bgDark dark:placeholder-gray-400"
-              />
+                className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+              >
+                <option value="" disabled>Choisissez un auteur</option>
+                {/* Afficher les auteurs récupérés depuis le contexte */}
+                {Array.isArray(authors) && authors.length > 0 ? (
+                  authors.map((author) => (
+                    <option key={author.id} value={author.name}>{author.name}</option>
+                  ))
+                ) : (
+                  <option disabled>Aucun auteur disponible</option>
+                )}
+              </select>
             </div>
             <div>
               <label>Prix:</label>
@@ -68,11 +100,11 @@ const AddBook: React.FC<AddBookProps> = ({ showModal, closeModal, onAddBook }) =
                 value={newBook.price}
                 onChange={handleInputChange}
                 required
+                min="0"
                 className="w-full p-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-text dark:bg-bgDark dark:placeholder-gray-400"
               />
             </div>
 
-            {/* Centrer les boutons */}
             <div className="flex justify-center gap-4 mt-4">
               <button
                 type="button"

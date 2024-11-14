@@ -7,6 +7,7 @@ interface BooksContextType {
   filteredBooks: Book[];
   searchQuery: string;
   sortBy: string;
+  authors: Author[];
   setSearchQuery: (query: string) => void;
   setSortBy: (sort: string) => void;
   addBook: (newBook: Omit<Book, 'id'>) => Promise<void>;
@@ -14,8 +15,14 @@ interface BooksContextType {
 
 const BooksContext = createContext<BooksContextType | undefined>(undefined);
 
+
 interface BooksProviderProps {
   children: ReactNode; 
+}
+
+interface Author {
+  id:string;
+  name: string;
 }
 
 export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
@@ -23,6 +30,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
   const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('');
+  const [authors, setAuthors] = useState<Author[]>([]);
 
   const fetchBooks = async () => {
     try {
@@ -47,6 +55,18 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
     }
   };
 
+  const fetchAuthors = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/api/authors');
+            setAuthors(response.data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des auteurs:', error);
+        }
+    };
+    useEffect(() => {
+        fetchAuthors();
+    }, []);
+
   useEffect(() => {
     fetchBooks();
   }, [searchQuery, sortBy]);
@@ -58,6 +78,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
         filteredBooks,
         searchQuery,
         sortBy,
+        authors,
         setSearchQuery,
         setSortBy,
         addBook,
