@@ -11,6 +11,7 @@ interface Book {
     publicationDate: string;
     author: string;
     price: number;
+    averageRating: number | null; // Champ pour la moyenne des avis
 }
 
 interface Author {
@@ -155,7 +156,7 @@ const BooksPage = () => {
                         title={book.title}
                         author={book.author}
                         //image={book.image}
-                        //rating={book.rating}
+                        averageRating={book.averageRating}
                     />
                 ))}
             </ul>
@@ -200,7 +201,7 @@ const BooksPage = () => {
                                 >
                                     <option value="" disabled>Choisissez un auteur</option>
                                     {authors.map((author) => (
-                                        <option key={author.id} value={author.id}>{author.name}</option>
+                                        <option key={author.id} value={author.name}>{author.name}</option>
                                     ))}
                                 </select>
                             </div>
