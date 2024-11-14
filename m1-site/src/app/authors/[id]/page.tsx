@@ -7,6 +7,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
+import { BooksProvider, useBooks } from '../../../providers/BookProvider';
+import AddBook from '../../../components/AddBook';
+import '../../App.css';
 
 interface Author {
   id: string;
@@ -21,13 +24,27 @@ interface Author {
   imageUrl?: string;
 }
 
-const AuthorDetailPage = () => {
+interface Book {
+  id: string;
+  title: string;
+  publicationDate: string;
+  author: string;
+  price: number;
+}
+
+const AuthorDetailPageContent = () => {
   const { id } = useParams();
   const router = useRouter();
   const [author, setAuthor] = useState<Author | null>(null);
+  const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [open, setOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editBiography, setEditBiography] = useState('');
+  const { addBook } = useBooks();
 
   useEffect(() => {
     if (id) {
@@ -35,142 +52,156 @@ const AuthorDetailPage = () => {
     }
   }, [id]);
 
+  useEffect(() => {
+    if (author) {
+      fetchBooks(author.name);
+    }
+  }, [author]);
+
   const fetchAuthorDetails = async (authorId: string) => {
     try {
       setLoading(true);
       const response = await axios.get(`http://localhost:3001/api/authors/${authorId}`);
       setAuthor(response.data);
-    } catch (err) {
-      setError("Erreur lors de la récupération des détails de l'auteur.");
+      setEditName(response.data.name);
+      setEditBiography(response.data.biography);
+    } catch (error) {
+      setError('Failed to fetch author details');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const fetchBooks = async (authorName: string) => {
     try {
-      await axios.put(`http://localhost:3001/api/authors/${id}`, author);
-      fetchAuthorDetails(id as string);
+      const response = await axios.get('http://localhost:3001/api/books');
+      const filteredBooks = response.data.filter((book: Book) => book.author === authorName);
+      setBooks(filteredBooks);
     } catch (error) {
-      setError("Erreur lors de la mise à jour des détails de l'auteur.");
+      setError('Failed to fetch books');
     }
   };
 
-  const handleDelete = async () => {
+  const handleDeleteAuthor = async () => {
     try {
       await axios.delete(`http://localhost:3001/api/authors/${id}`);
       router.push('/authors');
     } catch (error) {
-      setError("Erreur lors de la suppression de l'auteur.");
-    }
-  };
-
-  const handleAddBook = async () => {
-    try {
-      const newBook = { 
-        title: "Nouveau Livre", 
-        authorId: id,
-        publicationDate: new Date().toISOString(), // Ajoutez une date de publication par défaut
-        price: 0 // Ajoutez un prix par défaut
-      };
-      const response = await axios.post(`http://localhost:3001/api/books`, newBook);
-      const bookId = response.data.id; // Assuming the response contains the new book's ID
-      await axios.post(`http://localhost:3001/api/authors/${id}/books`, { bookId });
-      fetchAuthorDetails(id as string);
-    } catch (error) {
-      setError("Erreur lors de l'ajout du livre.");
+      setError('Failed to delete author');
     }
   };
 
   const handleDeleteBook = async (bookId: string) => {
     try {
       await axios.delete(`http://localhost:3001/api/books/${bookId}`);
-      fetchAuthorDetails(id as string);
+      fetchBooks(author?.name || '');
     } catch (error) {
-      setError("Erreur lors de la suppression du livre.");
+      setError('Failed to delete book');
     }
   };
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const formatDate = (dateString: string): string => {
-    const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
-    return new Date(dateString).toLocaleDateString('fr-FR', options);
+  const handleEditAuthor = async () => {
+    try {
+      await axios.put(`http://localhost:3001/api/authors/${id}`, {
+        name: editName,
+        biography: editBiography,
+      });
+      fetchAuthorDetails(id as string);
+      setShowEditModal(false);
+    } catch (error) {
+      setError('Failed to update author');
+    }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-32">
-        <CircularProgress color="inherit" />
-      </div>
-    );
-  }
-
+  if (loading) return (
+    <div className="flex justify-center items-center h-32">
+      <CircularProgress color="inherit" />
+    </div>
+  );
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="w-full bg-gradient-to-r from-green-200 to-blue-300 dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto mt-8">
-      <div className="flex flex-col md:flex-row items-center md:items-start space-x-0 md:space-x-8">
-        <img 
-          src={author?.imageUrl || '/path/to/default/image.png'} 
-          alt={author?.name} 
-          className="w-48 h-64 object-cover rounded-lg shadow-md mb-4 md:mb-0" 
-          onError={(e) => e.currentTarget.src = '/path/to/default/image.png'} 
-        />
-        <div className="flex flex-col space-y-4 w-full">
-          <h1 className="text-3xl font-bold text-center md:text-left mb-2">{author?.name}</h1>
-          <p className="text-lg text-center md:text-left mb-4 italic">{author?.biography || "Aucune biographie disponible"}</p>
-          
-          <form onSubmit={handleUpdate} className="flex flex-col space-y-2">
-            <input 
-              type="text" 
-              value={author?.name || ''} 
-              onChange={(e) => setAuthor({ ...author, name: e.target.value })} 
-              className="p-2 border rounded-md"
-              placeholder="Nom de l'auteur"
-            />
-            <textarea 
-              value={author?.biography || ''} 
-              onChange={(e) => setAuthor({ ...author, biography: e.target.value })} 
-              className="p-2 border rounded-md"
-              placeholder="Biographie"
-            />
-            <Button variant="contained" color="primary" type="submit" className="self-start mt-2">Mettre à jour</Button>
-          </form>
-
-          <h2 className="text-2xl font-bold text-center md:text-left mt-6">Livres :</h2>
-          <ul className="list-disc list-inside">
-            {author?.books.map(book => (
-              <li key={book.id} className="flex justify-between items-center mt-2">
-                <a href={`/books/${book.id}`} className="text-blue-500 hover:underline">{book.title}</a>
-                <button onClick={() => handleDeleteBook(book.id)} className="text-red-500 hover:text-red-700">Supprimer</button>
-              </li>
-            ))}
-          </ul>
-          <Button onClick={handleAddBook} variant="contained" color="secondary" className="mt-4">Ajouter un livre</Button>
-
-          <Button variant="contained" color="error" onClick={handleOpen} className="mt-4">Supprimer l'auteur</Button>
-          <Modal open={open} onClose={handleClose}>
-            <Box className="p-4 bg-white dark:bg-gray-700 rounded-lg shadow-lg mx-auto mt-20 max-w-sm">
-              <h2 className="text-lg font-bold">Confirmer la suppression</h2>
-              <p className="mt-2">Êtes-vous sûr de vouloir supprimer cet auteur ?</p>
-              <div className="flex justify-end space-x-4 mt-4">
-                <Button variant="contained" color="error" onClick={handleDelete}>Confirmer</Button>
-                <Button variant="outlined" onClick={handleClose}>Annuler</Button>
-              </div>
-            </Box>
-          </Modal>
+    <div className="w-full bg-bgLight dark:bg-text text-text dark:text-bgLight rounded-lg shadow-xl p-8 max-w-4xl mx-auto">
+      <div className="flex items-center space-x-8">
+        {author?.imageUrl && <img src={author.imageUrl} alt={author.name} className="w-48 h-64 object-cover rounded-lg" />}
+        <div className="flex flex-col space-y-4">
+          <h1 className="text-3xl font-bold text-center md:text-left">{author?.name}</h1>
+          <p className="text-lg text-center md:text-left">{author?.biography}</p>
+          <p className="text-md text-center md:text-left">Date de naissance: {author?.birthDate}</p>
+          {author?.deathDate && <p className="text-md text-center md:text-left">Date de décès: {author?.deathDate}</p>}
+          <Button onClick={() => setShowModal(true)} className="p-2 bg-bgLight text-text hover:bg-bgMuted rounded-lg dark:bg-text dark:text-bgLight dark:hover:bg-secondary ml-4">
+            Ajouter un Livre
+          </Button>
+          <Button onClick={() => setShowDeleteModal(true)} className="p-2 bg-red-500 text-white hover:bg-red-700 rounded-lg ml-4">
+            Supprimer l'Auteur
+          </Button>
+          <Button onClick={() => setShowEditModal(true)} className="p-2 bg-blue-500 text-white hover:bg-blue-700 rounded-lg ml-4">
+            Modifier la Bio et le Nom
+          </Button>
         </div>
       </div>
-      <div className="mt-8">
-        <p>Date de naissance: {author?.birthDate ? formatDate(author.birthDate) : 'N/A'}</p>
-        {author?.deathDate && <p>Date de décès: {formatDate(author.deathDate)}</p>}
-        <p>Livres: {author?.books.map(book => book.title).join(', ')}</p>
-      </div>
+      <h2 className="text-2xl font-semibold mt-8">Livres</h2>
+      <ul className="list-disc list-inside">
+        {books.map((book) => (
+          <li key={book.id} className="flex justify-between items-center">
+            <a href={`/books/${book.id}`} className="text-blue-500 hover:underline">{book.title}</a>
+            <Button onClick={() => handleDeleteBook(book.id)} className="p-2 bg-red-500 text-white hover:bg-red-700 rounded-lg ml-4">
+              Supprimer
+            </Button>
+          </li>
+        ))}
+      </ul>
+      <AddBook showModal={showModal} closeModal={() => setShowModal(false)} onAddBook={addBook} />
+      <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+        <Box className="p-4 bg-white rounded-lg shadow-lg">
+          <h2 className="text-xl font-semibold">Confirmer la suppression</h2>
+          <p>Êtes-vous sûr de vouloir supprimer cet auteur ?</p>
+          <div className="flex justify-end space-x-4 mt-4">
+            <Button onClick={handleDeleteAuthor} className="p-2 bg-red-500 text-white hover:bg-red-700 rounded-lg">
+              Confirmer
+            </Button>
+            <Button onClick={() => setShowDeleteModal(false)} className="p-2 bg-gray-300 text-black hover:bg-gray-400 rounded-lg">
+              Annuler
+            </Button>
+          </div>
+        </Box>
+      </Modal>
+      <Modal open={showEditModal} onClose={() => setShowEditModal(false)}>
+        <Box className="p-4 bg-white rounded-lg shadow-lg">
+          <h2 className="text-xl font-semibold">Modifier la Biographie et le Nom</h2>
+          <div className="flex flex-col space-y-4 mt-4">
+            <input
+              type="text"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              placeholder="Nom"
+              className="p-2 border border-gray-300 rounded-lg"
+            />
+            <textarea
+              value={editBiography}
+              onChange={(e) => setEditBiography(e.target.value)}
+              placeholder="Biographie"
+              className="p-2 border border-gray-300 rounded-lg"
+            />
+            <div className="flex justify-end space-x-4 mt-4">
+              <Button onClick={handleEditAuthor} className="p-2 bg-blue-500 text-white hover:bg-blue-700 rounded-lg">
+                Enregistrer
+              </Button>
+              <Button onClick={() => setShowEditModal(false)} className="p-2 bg-gray-300 text-black hover:bg-gray-400 rounded-lg">
+                Annuler
+              </Button>
+            </div>
+          </div>
+        </Box>
+      </Modal>
     </div>
   );
 };
+
+const AuthorDetailPage = () => (
+  <BooksProvider>
+    <AuthorDetailPageContent />
+  </BooksProvider>
+);
 
 export default AuthorDetailPage;

@@ -12,9 +12,9 @@ export class AuthorService {
     ) {}
 
     async getAllAuthors({
-                      search,
-                      sortBy,
-                  }: {
+        search,
+        sortBy,
+    }: {
         search?: string;
         sortBy?: 'name' | 'birthDate' | 'deathDate' | 'books';
     }): Promise<Author[]> {
@@ -67,6 +67,7 @@ export class AuthorService {
         author.books = author.books.filter((b) => b !== bookId);
         return this.authorRepository.save(author);
     }
+
     async updateAuthorImage(id: string, imageUrl: string): Promise<Author> {
         const author = await this.authorRepository.findOneBy({ id });
         if (!author) {
@@ -86,7 +87,4 @@ export class AuthorService {
         await this.authorRepository.update(id, updateAuthorDto);
         return this.authorRepository.findOneBy({ id });
     }
-
-
-    
 }

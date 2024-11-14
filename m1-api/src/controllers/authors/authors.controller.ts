@@ -10,19 +10,19 @@ import { Multer } from 'multer';
 
 type File = Express.Multer.File;
 
-
 @Controller('api/authors')
 export class AuthorController {
     constructor(private readonly authorService: AuthorService) {}
 
-    @Get()//Get all data from Authors
+    @Get()
     async getAllAuthors(
         @Query('search') search?: string,
         @Query('sortBy') sortBy?: 'name' | 'birthDate' | 'deathDate' | 'books'
     ): Promise<Author[]> {
         return this.authorService.getAllAuthors({ search, sortBy });
     }
-    @Put() // Create New Author
+
+    @Put()
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
             destination: './uploads',
@@ -37,23 +37,25 @@ export class AuthorController {
         return this.authorService.create({ ...createauthor, imageUrl });
     }
 
-    @Post() // Add new book to author
+    @Post()
     async AddNewBookToAuthor(@Body() body: { id: string, book: string }): Promise<Author> {
         const { id, book } = body;
         return this.authorService.AddNewBookToAuthor(id, book);
     }
 
-    @Patch()//Remove book from author
+    @Patch()
     async RemoveBookFromAuthor(@Body() body:{id: string, book: string}): Promise<Author> {
         const { id, book } = body;
         return this.authorService.RemoveBookFromAuthor(id, book);
     }
-    @Delete()//Delete author
+
+    @Delete()
     async remove(@Body() body:{id: string}): Promise<void> {
         const { id } = body;
         return this.authorService.remove(id);
-    } 
-    @Post(':id/upload') // Upload author image
+    }
+
+    @Post(':id/upload')
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
             destination: './uploads',
@@ -69,35 +71,28 @@ export class AuthorController {
     }
 
     @Get(':id')
-    async getAuthor(@Param('id') body :{ id: string}): Promise<Author> {
-        const { id } = body;
-        const author = await this.authorService.findOne(id);
-        if (!author) {
-            throw new Error('Auteur non trouvé');
-        }
-        return author;
+    async getAuthor(@Param('id') id: string): Promise<Author> {
+        return this.authorService.findOne(id);
     }
 
     @Put(':id')
-async updateAuthor(@Param('id') id: string, @Body() updateAuthorDto: CreateAuthorDto): Promise<Author> {
-    return this.authorService.update(id, updateAuthorDto);
+    async updateAuthor(@Param('id') id: string, @Body() updateAuthorDto: CreateAuthorDto): Promise<Author> {
+        return this.authorService.update(id, updateAuthorDto);
     }
 
     @Delete(':id')
-async removeAuthor(@Param('id') id: string): Promise<void> {
-    return this.authorService.remove(id);
+    async removeAuthor(@Param('id') id: string): Promise<void> {
+        return this.authorService.remove(id);
     }
 
     @Post(':id/books')
-async addBookToAuthor(@Param('id') id: string, @Body() body: { bookId: string }): Promise<Author> {
-    const { bookId } = body;
-    return this.authorService.AddNewBookToAuthor(id, bookId);
+    async addBookToAuthor(@Param('id') id: string, @Body() body: { bookId: string }): Promise<Author> {
+        const { bookId } = body;
+        return this.authorService.AddNewBookToAuthor(id, bookId);
     }
 
     @Delete(':id/books/:bookId')
-async removeBookFromAuthor(@Param('id') id: string, @Param('bookId') bookId: string): Promise<Author> {
-    return this.authorService.RemoveBookFromAuthor(id, bookId);
+    async removeBookFromAuthor(@Param('id') id: string, @Param('bookId') bookId: string): Promise<Author> {
+        return this.authorService.RemoveBookFromAuthor(id, bookId);
     }
-
-
 }
