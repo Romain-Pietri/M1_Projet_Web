@@ -22,6 +22,7 @@ export const RatingProvider: React.FC<RatingProviderProps> = ({ children }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  
 
   // Fonction pour récupérer les commentaires d'un livre spécifique
   const fetchComments = async (bookId: string) => {
@@ -29,10 +30,12 @@ export const RatingProvider: React.FC<RatingProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-        const response = await axios.post(`http://localhost:3001/api/ratings/${bookId}`);
+      console.log(bookId);
+        const response = await axios.get(`http://localhost:3001/api/ratings/${bookId}`);
       setComments(response.data); // Mettre à jour l'état avec les commentaires récupérés
-    } catch (err) {
-      setError('Erreur lors de la récupération des commentaires.');
+    } catch (err: any) {
+      const message = err.response?.data?.message || 'Erreur lors de la récupération des commentaires.';
+      setError(message);
     } finally {
       setIsLoading(false);
     }
