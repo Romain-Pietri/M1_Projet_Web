@@ -46,6 +46,17 @@ const HomePageContent = () => {
     const getBookCount = (authorName: string) => {
         return books.filter(book => book.author === authorName).length;
     };
+    const AverageNote = (authorName: string) =>
+        {
+            let booksAuthor = books.filter(book => book.author === authorName);
+            let sum = 0;
+            booksAuthor.forEach(book => {
+                if (book.averageRating !== undefined) {
+                    sum += book.averageRating;
+                }
+            });
+            return sum / booksAuthor.length;
+        }
 
     return (
         <div className="dark:bg-buttonDark dark:text-white min-h-screen">
@@ -78,7 +89,7 @@ const HomePageContent = () => {
                                 name={author.name}
                                 image={author.imageUrl}
                                 bookCount={getBookCount(author.name)}
-                                Note={1}
+                                Note={AverageNote(author.name)}
                             />
                         ))}
                     </div>
