@@ -72,6 +72,7 @@ const HomePageContent = () => {
                                 key={book.id}
                                 id={book.id}
                                 title={book.title}
+                                image={book.imageUrl}
                                 author={book.author}
                                 rating={book.averageRating}
                             />

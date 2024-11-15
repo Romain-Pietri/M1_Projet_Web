@@ -40,7 +40,7 @@ const AddRatingDrawer: React.FC<AddRatingDrawerProps> = ({ open, onClose }) => {
           value={newRating}
           onChange={(e, newValue) => setNewRating(newValue || 0)} 
           //mettre le contour en blanc en dark mode
-            className='dark:text-secondary [&_.MuiRating-iconEmpty]:text-white'
+            className='dark:text-secondary dark:[&_.MuiRating-iconEmpty]:text-white'
           />
 
         {/* Champ pour le nom de l'utilisateur */}

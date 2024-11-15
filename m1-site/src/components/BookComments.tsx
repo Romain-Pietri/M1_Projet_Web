@@ -48,7 +48,7 @@ const BookCommentsDrawer: React.FC<BookCommentsDrawerProps> = ({ open, onClose, 
               <div key={index} className="flex-1 p-4 border rounded-lg shadow-sm bg-white dark:bg-buttonDark">
                 <div className="flex items-center mb-2">
                   <span className="font-semibold mr-2 dark:text-bgLight">{comment.user}</span>
-                  <Rating value={comment.rating} readOnly size="small" className='[&_.MuiRating-iconEmpty]:text-white'/>
+                  <Rating value={comment.rating} readOnly size="small" className='dark:[&_.MuiRating-iconEmpty]:text-white'/>
                 </div>
                 {comment.comment && <p className="text-gray-700 dark:text-gray-300">{comment.comment}</p>}
               </div>
