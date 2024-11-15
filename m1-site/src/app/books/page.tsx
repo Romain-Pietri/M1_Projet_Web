@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { BooksProvider, useBooks } from '../../providers/BookProvider';
-import BookOfDay from '../../components/BookOfDay';
+import BookOfDay from '../../components/BookTile';
 import AddBook from '../../components/AddBook';
 import '../App.css';
 

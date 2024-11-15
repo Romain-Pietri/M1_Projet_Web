@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { AuthorsProvider, useAuthors } from '../../providers/AuthorProvider';
 import { BooksProvider, useBooks } from '../../providers/BookProvider';
-import AuthorOfTheDay from '../../components/AuthorOfDay';
+import AuthorOfTheDay from '../../components/AuthorTile';
 import AddAuthor from '../../components/AddAuthor';
 import { Author } from '../../models/author.model';
 import { Book } from '../../models/book.model';
