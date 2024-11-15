@@ -70,7 +70,7 @@ export class AuthorController {
         return this.authorService.updateAuthorImage(id, imageUrl);
     }
 
-    @Get(':id')
+    @Get(':/id')
     async getAuthor(@Param('id') id: string): Promise<Author> {
         return this.authorService.findOne(id);
     }

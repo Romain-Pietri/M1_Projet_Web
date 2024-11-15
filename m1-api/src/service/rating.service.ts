@@ -33,13 +33,15 @@ export class RatingService {
         if (!book) {
           throw new NotFoundException(`Livre avec l'ID ${bookId} non trouvé.`);
         }
-    
-        // Récupérer les commentaires du livre
-        return this.ratingRepository.find({
-          where: { book: { id: bookId } },
-          relations: ['book'],
-        });
+
+        const comments = await this.ratingRepository.find({ where: { book: { id: bookId } }, relations: ['book'] });
+        if (!comments) {
+          throw new NotFoundException(`Aucun commentaire pour le livre : ${book.title}.`);
+        }
+        return comments;
     }
+
+    // Récupérer tous les commentaires
     async getAllRatings(): Promise<Rating[]> {
         return this.ratingRepository.find();
     }

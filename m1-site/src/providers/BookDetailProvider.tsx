@@ -9,6 +9,8 @@ interface Book {
     publicationDate: string;
     author: string;
     price?: number;
+    imageUrl?: string;
+
 }
 
 interface BookDetailContextType {

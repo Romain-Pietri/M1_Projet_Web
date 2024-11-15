@@ -10,7 +10,7 @@ const DeleteBookButton: React.FC<DeleteBookButtonProps> = ({ onDelete }) => {
 
   return (
     <>
-      <Button onClick={() => setOpenModal(true)} variant="outlined" color="error">
+      <Button onClick={() => setOpenModal(true)} variant="outlined" color="error" className='dark:bg-white'>
         Supprimer le livre
       </Button>
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
