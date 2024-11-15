@@ -17,7 +17,6 @@ interface BooksContextType {
 
 const BooksContext = createContext<BooksContextType | undefined>(undefined);
 
-
 interface BooksProviderProps {
   children: ReactNode;
 }
@@ -48,8 +47,6 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
 
   const addBook = async (newBook: Omit<Book, 'id'>) => {
     try {
-      console.log(newBook);
-  
       const formData = new FormData();
       for (const key in newBook) {
         formData.append(key, (newBook as any)[key]);

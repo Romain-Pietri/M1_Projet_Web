@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Author } from '../entities/author.entity';
+import { Book } from 'src/entities/book.entity';
 import { CreateAuthorDto } from '../DTO/author.dto';
 
 @Injectable()
@@ -9,6 +10,9 @@ export class AuthorService {
     constructor(
         @InjectRepository(Author)
         private authorRepository: Repository<Author>,
+
+        @InjectRepository(Book)
+        private bookRepository: Repository<Book>, 
     ) {}
 
     async getAllAuthors({
@@ -84,7 +88,25 @@ export class AuthorService {
     }
 
     async update(id: string, updateAuthorDto: CreateAuthorDto): Promise<Author> {
+        const author = await this.authorRepository.findOneBy({ id });
+        if (!author) {
+            throw new Error('Author not found');
+        }
+
+        const oldName = author.name;
+
         await this.authorRepository.update(id, updateAuthorDto);
+
+        if (updateAuthorDto.name && updateAuthorDto.name !== oldName) {
+            await this.bookRepository
+                .createQueryBuilder()
+                .update(Book)
+                .set({ author: updateAuthorDto.name })
+                .where('author = :oldName', { oldName })
+                .execute();
+        }
+
+        // Récupérer l'auteur mis à jour
         return this.authorRepository.findOneBy({ id });
     }
 }

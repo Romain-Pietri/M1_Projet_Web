@@ -23,7 +23,6 @@ const AddRatingDrawer: React.FC<AddRatingDrawerProps> = ({ open, onClose }) => {
   // log le bookId
   const handleAddRating = async () => {
     if (newRating > 0 && userName.trim()) {
-      console.log(bookId);
       await addRating(bookId, userName, newRating, newComment); 
       onClose();  // Fermer le Drawer après ajout
     } else {

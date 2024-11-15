@@ -44,7 +44,8 @@ const BookDetailContent = () => {
     if (error) return <div>{error}</div>;
 
     return (
-        <div className="w-full bg-bgLight dark:bg-text text-text dark:text-bgLight rounded-lg shadow-xl p-8 mt-8 max-w-2xl mx-auto">
+        <div className="dark:bg-buttonDark">
+        <div className="bg-bgLight dark:bg-text text-text dark:text-bgLight rounded-lg shadow-xl p-8 mt-8 max-w-2xl mx-auto">
             <div className="flex items-center space-x-8">
                 <img src={ book?.imageUrl } alt={book?.title} className="w-48 h-64 object-cover rounded-lg" />
                 <div className="flex flex-col space-y-4">
@@ -74,6 +75,7 @@ const BookDetailContent = () => {
                 </div>
             </div>
 
+        </div>
         </div>
     );
 };

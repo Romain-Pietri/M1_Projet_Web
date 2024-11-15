@@ -18,12 +18,14 @@ const BookCommentsDrawer: React.FC<BookCommentsDrawerProps> = ({ open, onClose, 
   const bookId = Array.isArray(id) ? id[0] : id; // Gérer le type pour que bookId soit une chaîne unique
 
   useEffect(() => {
-    if (open && !commentsLoaded) {
-      fetchComments(bookId);
-      setCommentsLoaded(true);
-    }
-    if (!open) {
-      setCommentsLoaded(false);
+    if (open) {
+      if (!commentsLoaded) {
+        fetchComments(bookId);
+        setCommentsLoaded(true);
+      }
+    } else {
+      setCommentsLoaded(false);  // Empêcher le rechargement des commentaires
+    
     }
   }, [open, bookId, fetchComments, commentsLoaded]);
 

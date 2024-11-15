@@ -70,7 +70,7 @@ export class AuthorController {
         return this.authorService.updateAuthorImage(id, imageUrl);
     }
 
-    @Get(':/id')
+    @Get(':id')
     async getAuthor(@Param('id') id: string): Promise<Author> {
         return this.authorService.findOne(id);
     }
@@ -95,4 +95,5 @@ export class AuthorController {
     async removeBookFromAuthor(@Param('id') id: string, @Param('bookId') bookId: string): Promise<Author> {
         return this.authorService.RemoveBookFromAuthor(id, bookId);
     }
+
 }

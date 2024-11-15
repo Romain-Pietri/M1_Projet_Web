@@ -78,4 +78,10 @@ export class BookService {
     async remove(id: string): Promise<void> {
         await this.bookRepository.delete(id);
     }
+
+    async getBookByAuthorId(author: string): Promise<Book[]> {
+        return this.bookRepository.find({
+            where: { author },
+        });
+    }
 }

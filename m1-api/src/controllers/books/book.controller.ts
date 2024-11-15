@@ -15,8 +15,10 @@ export class BookController {
     async getBooks(
         @Query('search') search?: string,
         @Query('sortBy') sortBy?: 'title' | 'date' | 'author' | 'price',
+        @Query('author') authorName?: string,
     ): Promise<Book[]> {
-        return this.bookService.findAll({ search, sortBy });
+        if (!authorName) return this.bookService.findAll({ search, sortBy });
+        return this.bookService.getBookByAuthorId(authorName);
     }
 
     // Route pour ajouter un nouveau livre

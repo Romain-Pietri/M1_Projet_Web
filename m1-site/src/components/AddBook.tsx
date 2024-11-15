@@ -1,10 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useBooks } from '../providers/BookProvider';
-
-interface Author {
-  id: string;
-  name: string;
-}
 
 interface AddBookProps {
   showModal: boolean;
@@ -15,10 +10,17 @@ interface AddBookProps {
 const AddBook: React.FC<AddBookProps> = ({ showModal, closeModal, onAddBook }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [newBook, setNewBook] = useState({ title: '', publicationDate: '', author: '', price: 0 });
-
-  // Accédez à l'ensemble des auteurs depuis le contexte
-  const { authors } = useBooks();
   const [selectedAuthor, setSelectedAuthor] = useState<string | null>(null);
+
+  const { authors } = useBooks();
+
+  useEffect(() => {
+    if (!showModal) {
+      setNewBook({ title: '', publicationDate: '', author: '', price: 0 });
+      setSelectedAuthor(null);
+      setSelectedFile(null);
+    }
+  }, [showModal]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,14 +42,17 @@ const AddBook: React.FC<AddBookProps> = ({ showModal, closeModal, onAddBook }) =
       return;
     }
 
-    // Ajouter l'ID de l'auteur au newBook
     if (!selectedFile) {
       alert('Veuillez sélectionner un fichier.');
       return;
     }
+
+    // Ajouter l'ID de l'auteur au newBook
     const bookWithAuthor = { ...newBook, author: selectedAuthor, price: Number(newBook.price), file: selectedFile };
+    
     // Passer l'objet avec l'ID de l'auteur à la fonction onAddBook
     onAddBook(bookWithAuthor);
+
     closeModal(); // Fermer la modale après ajout
   };
 
@@ -117,7 +122,7 @@ const AddBook: React.FC<AddBookProps> = ({ showModal, closeModal, onAddBook }) =
             <div>
               <label>Image:</label>
               <input
-                type="File"
+                type="file"
                 name="file"
                 onChange={handleFileChange}
                 className="w-full p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-100"

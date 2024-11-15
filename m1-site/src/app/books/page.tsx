@@ -19,7 +19,7 @@ const BooksPageContent = () => {
   };
 
   return (
-    <div className="p-4 dark:bg-buttonDark">
+    <div className="p-8 dark:bg-buttonDark">
       <h1 className="text-3xl font-semibold mb-6 p-8 text-center text-text dark:text-bgLight">Liste des Livres</h1>
 
       {/* Conteneur de la barre de recherche et du bouton d'ajout */}

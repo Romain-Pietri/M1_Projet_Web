@@ -30,7 +30,6 @@ export const RatingProvider: React.FC<RatingProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      console.log(bookId);
         const response = await axios.get(`http://localhost:3001/api/ratings/${bookId}`);
       setComments(response.data); // Mettre à jour l'état avec les commentaires récupérés
     } catch (err: any) {
