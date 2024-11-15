@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
-import { AuthorProvider, useAuthor } from '../../../providers/AuthorDetailProvider';
+import { AuthorProvider, useAuthorDetail } from '../../../providers/AuthorDetailProvider';
 import { BooksProvider, useBooks } from '../../../providers/BookProvider';
 import AddBook from '../../../components/AddBook';
 import EditAuthor from '../../../components/EditAuthor';  
@@ -28,7 +28,7 @@ const AuthorDetailPageContent = () => {
     handleDeleteAuthor,
     handleDeleteBook,
     handleEditAuthor,
-  } = useAuthor();
+  } = useAuthorDetail();
 
   const { addBook } = useBooks();
 

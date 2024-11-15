@@ -115,7 +115,7 @@ export const AuthorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   );
 };
 
-export const useAuthor = () => {
+export const useAuthorDetail = () => {
   const context = useContext(AuthorContext);
   if (!context) {
     throw new Error('useAuthor must be used within an AuthorProvider');

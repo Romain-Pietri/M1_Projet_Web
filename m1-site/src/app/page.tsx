@@ -1,18 +1,51 @@
-"use client";
+'use client';
 
-import React from 'react';
-import './App.css';
-import BookOfDay from '../components/BookOfDay';
-import AuthorOfDay from '../components/AuthorOfDay';
+import React, { useState, useEffect } from 'react';
+import { AuthorsProvider, useAuthors } from '../providers/AuthorProvider';
 import { BooksProvider, useBooks } from '../providers/BookProvider';
-//import { AuthorProvider, useAuthors } from '../providers/AuthorProvider';
+import AuthorOfTheDay from '../components/AuthorOfDay';
+import BookOfDay from '../components/BookOfDay';
+import AddAuthor from '../components/AddAuthor';
+import { Author } from '../models/author.model';
+import { Book } from '../models/book.model';
+import './App.css';
 
 const HomePageContent = () => {
-    // Récupérez les livres et les auteurs depuis leurs providers
-    const { filteredBooks } = useBooks();
-    //const { authors, loading } = useAuthors();
+    const { filteredAuthors, searchQuery, setSearchQuery, sortBy, setSortBy, addAuthor, fetchAllBooks } = useAuthors() as {
+        filteredAuthors: Author[];
+        searchQuery: string;
+        setSearchQuery: (query: string) => void;
+        sortBy: string;
+        setSortBy: (sort: string) => void;
+        addAuthor: (newAuthor: Omit<Author, 'id'>, file?: File) => Promise<void>;
+        fetchAllBooks: () => Promise<Book[]>;
+    };
 
-    console.log("Livres dans HomePageContent:", filteredBooks);
+    const { filteredBooks } = useBooks();
+
+    const [books, setBooks] = useState<Book[]>([]);
+
+    useEffect(() => {
+        const fetchBooks = async () => {
+            const books = await fetchAllBooks();
+            setBooks(books);
+        };
+        fetchBooks();
+    }, [fetchAllBooks]);
+
+    const [showModal, setShowModal] = useState(false);
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSortBy(e.target.value);
+    };
+
+    const getBookCount = (authorName: string) => {
+        return books.filter(book => book.author === authorName).length;
+    };
 
     return (
         <div className="dark:bg-buttonDark dark:text-white min-h-screen">
@@ -29,22 +62,38 @@ const HomePageContent = () => {
                                 id={book.id}
                                 title={book.title}
                                 author={book.author}
-                                />
+                            />
                         ))}
                     </div>
                 </section>
 
+                {/* Section des auteurs du jour */}
+                <section className="mb-12">
+                    <h2 className="text-2xl font-semibold mb-4">Auteurs du jour</h2>
+                    <div className="flex flex-wrap justify-center gap-8">
+                        {filteredAuthors.slice(0, 3).map((author) => (
+                            <AuthorOfTheDay
+                                key={author.id}
+                                id={author.id}
+                                name={author.name}
+                                image={author.imageUrl}
+                                bookCount={getBookCount(author.name)}
+                                Note={1}
+                            />
+                        ))}
+                    </div>
+                </section>
             </main>
         </div>
     );
 };
 
-export default function HomePage() {
-    return (
-        <BooksProvider>
+const HomePage = () => (
+    <BooksProvider>
+        <AuthorsProvider>
+            <HomePageContent />
+        </AuthorsProvider>
+    </BooksProvider>
+);
 
-                <HomePageContent />
-
-        </BooksProvider>
-    );
-}
+export default HomePage;
