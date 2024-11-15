@@ -64,7 +64,7 @@ const AddBook: React.FC<AddBookProps> = ({ showModal, closeModal, onAddBook }) =
     showModal && (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-text dark:text-bgLight border-gray-300 dark:border-gray-600">
         <div className="bg-white dark:bg-buttonDark p-6 rounded-lg shadow-lg w-full max-w-md">
-          <h1 className="text-lg text-text font-bold mb-4 text-center">Ajouter un livre</h1>
+          <h1 className="text-lg text-text font-bold mb-4 text-center dark:text-primary">Ajouter un livre</h1>
           <form onSubmit={handleSubmit}>
             <div>
               <label>Titre:</label>
@@ -94,7 +94,7 @@ const AddBook: React.FC<AddBookProps> = ({ showModal, closeModal, onAddBook }) =
                 value={selectedAuthor || ''}
                 onChange={handleAuthorChange}
                 required
-                className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                className="w-full p-2 border border-gray-300 rounded-lg mb-4 dark:bg-bgDark "
               >
                 <option value="" disabled>Choisissez un auteur</option>
                 {/* Afficher les auteurs récupérés depuis le contexte */}
@@ -125,7 +125,7 @@ const AddBook: React.FC<AddBookProps> = ({ showModal, closeModal, onAddBook }) =
                 type="file"
                 name="file"
                 onChange={handleFileChange}
-                className="w-full p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-100"
+                className="w-full p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-bgDark dark:placeholder-gray-400"
               />
             </div>
             <div className="flex justify-center gap-4 mt-4">

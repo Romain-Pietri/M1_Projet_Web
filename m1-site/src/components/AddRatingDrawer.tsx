@@ -32,14 +32,16 @@ const AddRatingDrawer: React.FC<AddRatingDrawerProps> = ({ open, onClose }) => {
 
   return (
     <Drawer anchor="right" open={open} onClose={onClose}>
-      <div className="p-6 w-80">
-        <h2 className="text-2xl mb-4">Ajouter un commentaire</h2>
+      <div className="p-6 w-80 h-full dark:bg-buttonDark">
+        <h2 className="text-2xl mb-4 dark:text-primary">Ajouter un commentaire</h2>
 
         {/* Champ pour évaluer la note */}
         <Rating
           value={newRating}
           onChange={(e, newValue) => setNewRating(newValue || 0)} 
-        />
+          //mettre le contour en blanc en dark mode
+            className='dark:text-secondary [&_.MuiRating-iconEmpty]:text-white'
+          />
 
         {/* Champ pour le nom de l'utilisateur */}
         <TextField
@@ -48,7 +50,7 @@ const AddRatingDrawer: React.FC<AddRatingDrawerProps> = ({ open, onClose }) => {
           onChange={(e) => setUserName(e.target.value)} 
           fullWidth
           variant="outlined"
-          className="my-4"
+          className="mb-4 dark:bg-bgLight rounded-lg"
         />
 
         {/* Champ pour le commentaire (facultatif) */}
@@ -60,16 +62,16 @@ const AddRatingDrawer: React.FC<AddRatingDrawerProps> = ({ open, onClose }) => {
           onChange={(e) => setNewComment(e.target.value)} 
           fullWidth
           variant="outlined"
-          className="my-4"
+          className="mb-4 dark:bg-bgLight rounded-lg"
         />
 
         {/* Bouton pour soumettre le formulaire */}
-        <Button onClick={handleAddRating} variant="contained" color="primary" disabled={isLoading}>
+        <Button onClick={handleAddRating} variant="contained" color="primary" disabled={isLoading} className='w-full bg-primary text-text hover:bg-secondary rounded-lg'>
           {isLoading ? 'En cours...' : 'Ajouter'}
         </Button>
 
         {/* Affichage des erreurs */}
-        {error && <div className="text-red-500 mt-4">{error}</div>}
+        {error && <div className="text-red-500 mb-4">{error}</div>}
       </div>
     </Drawer>
   );

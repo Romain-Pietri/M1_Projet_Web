@@ -24,24 +24,24 @@ const EditAuthor: React.FC<EditAuthorProps> = ({
 }) => {
   return (
     <Modal open={showEditModal} onClose={() => setShowEditModal(false)}>
-      <Box className="p-4 bg-white rounded-lg shadow-lg">
-        <h2 className="text-xl font-semibold">Modifier l'Auteur</h2>
+      <Box className="p-4 bg-white rounded-lg shadow-lg dark:bg-buttonDark">
+        <h2 className="text-xl font-semibold dark:text-bgLight">Modifier l'Auteur</h2>
         <input
           type="text"
           value={editName}
           onChange={(e) => setEditName(e.target.value)}
           placeholder="Nom"
-          className="p-2 border border-gray-300 rounded-lg w-full mb-4"
+          className="p-2 border border-gray-300 rounded-lg mb-4 dark:bg-bgLight"
         />
         <textarea
           value={editBiography}
           onChange={(e) => setEditBiography(e.target.value)}
           placeholder="Biographie"
-          className="p-2 border border-gray-300 rounded-lg w-full mb-4"
+          className="p-2 border border-gray-300 rounded-lg w-full mb-4 dark:bg-bgLight"
         />
         <Button
           onClick={handleEditAuthor} // Cette fonction est passée du parent
-          className="p-2 bg-blue-500 text-white hover:bg-blue-700 rounded-lg w-full"
+          className="p-2 bg-primary text-text hover:bg-secondary rounded-lg"
         >
           Enregistrer
         </Button>

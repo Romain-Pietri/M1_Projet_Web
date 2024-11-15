@@ -10,13 +10,13 @@ const DeleteBookButton: React.FC<DeleteBookButtonProps> = ({ onDelete }) => {
 
   return (
     <>
-      <Button onClick={() => setOpenModal(true)} variant="outlined" color="error" className='dark:bg-white'>
+      <Button onClick={() => setOpenModal(true)} variant="outlined" color="error" className='dark:bg-buttonDark'>
         Supprimer le livre
       </Button>
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
-      <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 bg-white border-2 border-gray-800 shadow-lg p-6 rounded-lg">
-          <div className="p-6 bg-white rounded shadow-md">
-            <p>Êtes-vous sûr de vouloir supprimer ce livre ?</p>
+      <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 bg-white border-1 p-1 rounded-lg">
+          <div className="p-6 bg-white rounded shadow-md dark:bg-buttonDark w-full">
+            <p className='dark:text-bgLight'>Êtes-vous sûr de vouloir supprimer ce livre ?</p>
             <Button onClick={onDelete} color="error">
               Oui, supprimer
             </Button>

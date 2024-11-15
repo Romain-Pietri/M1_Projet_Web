@@ -36,9 +36,9 @@ const AddAuthor: React.FC<AddAuthorProps> = ({ showModal, closeModal, onAddAutho
     if (!showModal) return null;
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
-                <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-gray-100">Ajouter un auteur</h2>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-text dark:text-bgLight border-gray-300 dark:border-gray-600">
+            <div className="bg-white dark:bg-buttonDark p-6 rounded-lg shadow-lg w-full max-w-md">
+                <h2 className="text-lg font-bold mb-4 text-text dark:text-primary">Ajouter un auteur</h2>
                 <form onSubmit={handleAddAuthor}>
                     <div>
                         <label>Nom:</label>
@@ -48,7 +48,7 @@ const AddAuthor: React.FC<AddAuthorProps> = ({ showModal, closeModal, onAddAutho
                             value={newAuthor.name}
                             onChange={handleInputChange}
                             required
-                            className="w-full p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-100"
+                            className="w-full p-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-text dark:bg-bgDark dark:placeholder-gray-400"
                         />
                     </div>
                     <div>
@@ -59,7 +59,7 @@ const AddAuthor: React.FC<AddAuthorProps> = ({ showModal, closeModal, onAddAutho
                             value={newAuthor.birthDate}
                             onChange={handleInputChange}
                             required
-                            className="w-full p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-100"
+                            className="w-full p-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-text dark:bg-bgDark dark:placeholder-gray-400"
                         />
                     </div>
                     <div>
@@ -70,7 +70,7 @@ const AddAuthor: React.FC<AddAuthorProps> = ({ showModal, closeModal, onAddAutho
                             value={newAuthor.deathDate}
                             onChange={handleInputChange}
                             disabled={newAuthor.isAlive}
-                            className="w-full p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-100"
+                            className="w-full p-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-text dark:bg-bgDark dark:placeholder-gray-400"
                         />
                     </div>
                     <div>
@@ -91,15 +91,15 @@ const AddAuthor: React.FC<AddAuthorProps> = ({ showModal, closeModal, onAddAutho
                             type="file"
                             name="file"
                             onChange={handleFileChange}
-                            className="w-full p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-100"
+                            className="w-full p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-bgDark dark:placeholder-gray-400"
                         />
                     </div>
                     <button onClick={closeModal}
-                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
+                            className="px-4 py-2 bg-primary text-text rounded-lg hover:bg-secondary transition mr-2 duration-300">
                         Annuler
                     </button>
                     <button type="submit"
-                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500">
+                            className="px-4 py-2 bg-bgLight text-text hover:bg-bgMuted rounded-lg transition duration-300 dark:bg-bgDark dark:text-gray-200 dark:hover:bg-gray-500">
                         Ajouter
                     </button>
                 </form>

@@ -31,8 +31,8 @@ const BookCommentsDrawer: React.FC<BookCommentsDrawerProps> = ({ open, onClose, 
 
   return (
     <SwipeableDrawer anchor="bottom" open={open} onClose={onClose} onOpen={onOpen} disableSwipeToOpen={false}>
-      <div className="p-6 w-full">
-        <h2 className="text-2xl font-bold mb-4">Commentaires</h2>
+      <div className="p-6 w-full dark:bg-buttonDark">
+        <h2 className="text-2xl font-bold mb-4 dark:text-primary">Commentaires</h2>
 
         {isLoading ? (
           <div className="flex justify-center items-center h-32">
@@ -41,14 +41,14 @@ const BookCommentsDrawer: React.FC<BookCommentsDrawerProps> = ({ open, onClose, 
         ) : error ? (
           <div className="text-red-500">{error}</div>
         ) : comments.length === 0 ? (
-          <p className="text-gray-500">Aucun commentaire pour ce livre.</p>
+          <p className="text-gray-500 dark:text-bgLight">Aucun commentaire pour ce livre.</p>
         ) : (
           <div className="flex flex-wrap gap-4">
             {comments.map((comment, index) => (
-              <div key={index} className="flex-1 p-4 border rounded-lg shadow-sm bg-white dark:bg-gray-800">
+              <div key={index} className="flex-1 p-4 border rounded-lg shadow-sm bg-white dark:bg-buttonDark">
                 <div className="flex items-center mb-2">
-                  <span className="font-semibold mr-2">{comment.user}</span>
-                  <Rating value={comment.rating} readOnly size="small" />
+                  <span className="font-semibold mr-2 dark:text-bgLight">{comment.user}</span>
+                  <Rating value={comment.rating} readOnly size="small" className='[&_.MuiRating-iconEmpty]:text-white'/>
                 </div>
                 {comment.comment && <p className="text-gray-700 dark:text-gray-300">{comment.comment}</p>}
               </div>
